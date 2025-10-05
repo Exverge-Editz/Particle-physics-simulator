@@ -1,10 +1,12 @@
-import pygame
+import pygame # type: ignore
 from sys import exit
-from pygame import Surface
+from pygame import Surface # type: ignore 
 from particles import *
 import user_notes
+import Help_button_code
 from forces import *
 import math as maths
+import time
 
 pygame.init()
 #gets the information of the monitor so the window is about the same size of the screen
@@ -22,8 +24,17 @@ electron_img: Surface = pygame.image.load("electron.png").convert_alpha()
 #the image for the user note button
 user_note_img: Surface = pygame.image.load("user_note.png").convert_alpha()
 
+#the image for the help button
+help_button_img: Surface = pygame.image.load("help_button.png").convert_alpha()
+
+#image for the help menu
+help_menu: Surface = pygame.image.load("help_menu.png").convert_alpha()
+help_menu = pygame.transform.scale(help_menu,(500, 500))
+
 #the initial position of the user notes button
 user_note_button = user_notes.Notes_button(screen_width - 10, 0, user_note_img)
+help_button = Help_button_code.Help_button(0,0, help_button_img)
+
 
 #list of all the particles on the screen and there position so they don't disappear
 particle_list = []
@@ -39,6 +50,12 @@ while True:
     #puts the user notes button on the screen
     if user_note_button.draw(screen):
         print("clicked")
+    else:
+        pass
+
+    if help_button.draw(screen):
+        screen.blit(help_menu, (100, 100))
+        #print("help")
     else:
         pass
 
@@ -59,11 +76,12 @@ while True:
 
     #how particles move on the screen by finding there velocities and accelerations
     #it then updates the position of the particle based of these
+
     for i, (particle, _) in enumerate(particle_list):
 
         fx, fy = (
-             em_forces[i][0] + strong_forces[i][0],
-             em_forces[i][1] + strong_forces[i][1]
+            em_forces[i][0] + strong_forces[i][0],
+            em_forces[i][1] + strong_forces[i][1]
         )
 
         #acceleration values for the particles
