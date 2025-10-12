@@ -13,7 +13,7 @@ class Particles:
         self.y = y
         self.vy = 0
 
-#class for baryons (protons, neutrons) these are the heavier elements
+#class for baryons (protons, neutrons) these are the heavier particles
 class Baryon(Particles):
 
     @staticmethod
@@ -24,9 +24,13 @@ class Baryon(Particles):
     def neutron(x, y):
         return Baryon(charge=0, mass=1, name='neutron', x=x, y=y)
 
-#class for leptons (electrons, neutrinos) these are the lighter elements
+#class for leptons (electrons, neutrinos) these are the lighter particles
 class Lepton(Particles):
 
     @staticmethod
     def electron(x, y):
         return Lepton(charge=(-1), mass=0.05, name="electron", x=x, y=y)
+
+    @staticmethod
+    def neutrino(x, y):
+        return Lepton(charge=0, mass=0, name="neutrino", x=x, y=y)
