@@ -3,7 +3,7 @@ import math
 from pygame import Vector2
 
 class Electromagnetic_force:
-    def __init__(self, COLOUMBS_CONSTANT=50):
+    def __init__(self, COLOUMBS_CONSTANT=70):
         self.COLOUMBS_CONSTANT = COLOUMBS_CONSTANT
 
     def calculate_force(self, p1, p2):
@@ -51,7 +51,7 @@ class strong_nuclear_force:
         for i, p1 in enumerate(particle):
             net_force = pygame.math.Vector2(0, 0)
             for j, p2 in enumerate(particle):
-                if i != j and p1['mass'] != 0.05 and p2['mass'] != 0.05 :
+                if i != j and (p1['mass'] != 0.05 and p2['mass'] != 0.05) and (p1['mass'] !=0 and p2['mass'] != 0) :
                     fx, fy = self.calculate_force(p1, p2)
                     net_force += pygame.math.Vector2(fx, fy)
             forces.append((net_force.x, net_force.y))
