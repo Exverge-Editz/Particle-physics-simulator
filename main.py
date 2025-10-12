@@ -1,17 +1,17 @@
-import pygame # type: ignore
+import pygame
 from sys import exit
-from pygame import Surface # type: ignore 
+from pygame import Surface
 from particles import *
 import user_notes
 import Help_button_code
+import exit_button_code
 from forces import *
 import math as maths
-import time
 
 pygame.init()
-#gets the information of the monitor so the window is about the same size of the screen
+#gets the information of the monitor so the window is the same size of the user's screen
 info = pygame.display.Info()
-screen_width, screen_height = int(info.current_w//1.13), int(info.current_h//1.13)
+screen_width, screen_height = int(info.current_w), int(info.current_h)
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Particle Physics simulator")
 clock = pygame.time.Clock()
@@ -20,6 +20,10 @@ clock = pygame.time.Clock()
 proton_img: Surface = pygame.image.load("proton.png").convert_alpha()
 neutron_img: Surface = pygame.image.load("neutron.png").convert_alpha()
 electron_img: Surface = pygame.image.load("electron.png").convert_alpha()
+neutrino_img: Surface = pygame.image.load("neutrino.png").convert_alpha()
+
+#the image for the exit button
+exit_button_img: Surface = pygame.image.load("exit_button.png").convert_alpha()
 
 #the image for the user note button
 user_note_img: Surface = pygame.image.load("user_note.png").convert_alpha()
@@ -29,12 +33,12 @@ help_button_img: Surface = pygame.image.load("help_button.png").convert_alpha()
 
 #image for the help menu
 help_menu: Surface = pygame.image.load("help_menu.png").convert_alpha()
-help_menu = pygame.transform.scale(help_menu,(500, 500))
+help_menu = pygame.transform.scale(help_menu,((screen_width* 0.95), (screen_height*1.3)))
 
-#the initial position of the user notes button
+#the initial position of the buttons
 user_note_button = user_notes.Notes_button(screen_width - 10, 0, user_note_img)
-help_button = Help_button_code.Help_button(0,0, help_button_img)
-
+help_button = Help_button_code.Help_button(125,1.5, help_button_img)
+exit_button = exit_button_code.Exit_button(0,0, exit_button_img)
 
 #list of all the particles on the screen and there position so they don't disappear
 particle_list = []
@@ -47,15 +51,20 @@ while True:
     #this is here so the screen refreshes so the particles move on the screen
     screen.fill((0,0,0))
 
-    #puts the user notes button on the screen
+    #puts the buttons on the screen
     if user_note_button.draw(screen):
         print("clicked")
     else:
         pass
 
-    if help_button.draw(screen):
+    if exit_button.draw(screen):
+        exit()
+    else:
+        pass
+
+    help_button.draw(screen)
+    if help_button.menu_visible:
         screen.blit(help_menu, (100, 100))
-        #print("help")
     else:
         pass
 
@@ -85,8 +94,12 @@ while True:
         )
 
         #acceleration values for the particles
-        ax = fx / particle.mass
-        ay = fy / particle.mass
+        if particle.mass != 0:
+            ax = fx / particle.mass
+            ay = fy / particle.mass
+        else:
+            ax = 1
+            ay = 1
 
         #updates the velocity
         particle.vx += ax
@@ -137,6 +150,9 @@ while True:
             if event.key == pygame.K_n:
                 n = Baryon.neutron(x, y)
                 particle_list.append((n, neutron_img))
+            if event.key == pygame.K_v:
+                v = Lepton.neutrino(x, y)
+                particle_list.append((v, neutrino_img))
 
     #Updates the display at 60 frames per second
     pygame.display.update()
