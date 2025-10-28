@@ -2,9 +2,7 @@ import pygame
 from sys import exit
 from pygame import Surface
 from particles import *
-import user_notes
-import Help_button_code
-import exit_button_code
+from buttons import *
 from forces import *
 import math as maths
 
@@ -35,10 +33,10 @@ help_button_img: Surface = pygame.image.load("help_button.png").convert_alpha()
 help_menu: Surface = pygame.image.load("help_menu.png").convert_alpha()
 help_menu = pygame.transform.scale(help_menu,((screen_width* 0.95), (screen_height*1.3)))
 
-#the initial position of the buttons
-user_note_button = user_notes.Notes_button(screen_width - 10, 0, user_note_img)
-help_button = Help_button_code.Help_button(125,1.5, help_button_img)
-exit_button = exit_button_code.Exit_button(0,0, exit_button_img)
+help_button = Help_Button(125, 1.5, help_button_img)
+exit_button = Exit_Button(0, 0, exit_button_img)
+user_note_button = Notes_Button((screen_width - 100), 0, user_note_img)
+
 
 #list of all the particles on the screen and there position so they don't disappear
 particle_list = []
@@ -136,9 +134,9 @@ while True:
         elif event.type == pygame.VIDEORESIZE:
             screen_width, screen_height = event.w, event.h
             screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-            button_x = screen_width - 10
+            button_x = screen_width - 100
             button_y = 0
-            user_note_button = user_notes.Notes_button(button_x, button_y, user_note_img)
+            user_note_button = Notes_Button(button_x, button_y, user_note_img)
         #selection that allows you to place particles down
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:
