@@ -15,33 +15,41 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 pygame.display.set_caption("Particle Physics simulator")
 clock = pygame.time.Clock()
 
-#the images for the particles.
-proton_img: Surface = pygame.image.load("proton.png").convert_alpha()
-neutron_img: Surface = pygame.image.load("neutron.png").convert_alpha()
-electron_img: Surface = pygame.image.load("electron.png").convert_alpha()
-neutrino_img: Surface = pygame.image.load("neutrino.png").convert_alpha()
+#function that crops the transparent part of the image
+def crop_transparency(image: pygame.Surface) -> pygame.Surface:
+    rect = image.get_bounding_rect()  # Finds non-transparent area
+    return image.subsurface(rect).copy()
 
-#the image for the exit button.
-exit_button_img: Surface = pygame.image.load("exit_button.png").convert_alpha()
+#loads and crops images
+proton_img = crop_transparency(pygame.image.load("proton.png").convert_alpha())
+neutron_img = crop_transparency(pygame.image.load("neutron.png").convert_alpha())
+electron_img = crop_transparency(pygame.image.load("electron.png").convert_alpha())
+neutrino_img = crop_transparency(pygame.image.load("neutrino.png").convert_alpha())
 
-#the image for the user note button.
-user_note_img: Surface = pygame.image.load("user_note.png").convert_alpha()
+exit_button_img = crop_transparency(pygame.image.load("exit_button.png").convert_alpha())
+user_note_img = crop_transparency(pygame.image.load("user_note.png").convert_alpha())
+help_button_img = crop_transparency(pygame.image.load("help_button.png").convert_alpha())
 
-#the image for the help button.
-help_button_img: Surface = pygame.image.load("help_button.png").convert_alpha()
+help_menu = crop_transparency(pygame.image.load("help_menu.png").convert_alpha())
+help_menu = pygame.transform.scale(help_menu, ((screen_width * 0.50), (screen_height * 0.75)))
 
-#image for the help menu.
-help_menu: Surface = pygame.image.load("help_menu.png").convert_alpha()
-help_menu = pygame.transform.scale(help_menu,((screen_width* 0.95), (screen_height*1.3)))
+under_construction = crop_transparency(pygame.image.load("under construction.png").convert_alpha())
+under_construction = pygame.transform.scale(under_construction, ((screen_width * 0.70), (screen_height * 0.75)))
 
-#feature under construction image.
-under_construction: Surface = pygame.image.load("under construction.png").convert_alpha()
-under_construction = pygame.transform.scale(under_construction,((screen_width* 0.80), (screen_height*0.95)))
+#positions for the button variables.
+X_POS_HELP_BUTTON = 125
+Y_POS_HELP_BUTTON = 0
+
+X_POS_EXIT_BUTTON = 0
+Y_POS_EXIT_BUTTON = 0
+
+X_POS_NOTE_BUTTON = screen_width - 100
+Y_POS_NOTE_BUTTON = 0
 
 #initialising the buttons.
-help_button = Help_Button(125, 1.5, help_button_img)
-exit_button = Exit_Button(0, 0, exit_button_img)
-user_note_button = Notes_Button((screen_width - 100), 0, user_note_img)
+help_button = Help_Button(X_POS_HELP_BUTTON, Y_POS_HELP_BUTTON, help_button_img)
+exit_button = Exit_Button(X_POS_EXIT_BUTTON, Y_POS_EXIT_BUTTON, exit_button_img)
+user_note_button = Notes_Button(X_POS_NOTE_BUTTON, Y_POS_NOTE_BUTTON, user_note_img)
 
 #list of all the particles on the screen and there position so they don't disappear.
 particle_list = []
@@ -49,11 +57,7 @@ particle_list = []
 #the loop that opens the window and allows you to place particles.
 while True:
     #gets the mouse position for future use.
-    x, y = pygame.mouse.get_pos()
-
-    #fixes bug where particles didn't place where the mouse was probably due to an image issue
-    x_pos = x - 25
-    y_pos = y - 35
+    x_pos, y_pos = pygame.mouse.get_pos()
 
     #this is here so the screen refreshes so the particles move on the screen.
     screen.fill((0,0,0))
