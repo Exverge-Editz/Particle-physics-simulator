@@ -16,7 +16,7 @@ class Exit_Button(Button):
 
     def draw(self, surface):
         action = False
-        LEFT_MOUSE_BUTTON = 0
+        LEFT_MOUSE_BUTTON: int = 0
         pos = pygame.mouse.get_pos()
 
         if self.rect.collidepoint(pos):
@@ -36,7 +36,7 @@ class Help_Button(Button):
 
     def draw(self, surface):
         action = False
-        LEFT_MOUSE_BUTTON = 0
+        LEFT_MOUSE_BUTTON: int = 0
         pos = pygame.mouse.get_pos()
 
         if self.rect.collidepoint(pos):
@@ -53,15 +53,17 @@ class Help_Button(Button):
 class Notes_Button(Button):
     def __init__(self, x, y, image):
         super().__init__(x, y, image)
+        self.menu_visible = False
 
     def draw(self, surface):
         action = False
-        LEFT_MOUSE_BUTTON = 0
+        LEFT_MOUSE_BUTTON: int = 0
         pos = pygame.mouse.get_pos()
 
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[LEFT_MOUSE_BUTTON] and not self.clicked:
                 self.clicked = True
+                self.menu_visible = not self.menu_visible
                 action = True
         if not pygame.mouse.get_pressed()[LEFT_MOUSE_BUTTON]:
             self.clicked = False
