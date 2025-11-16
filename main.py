@@ -16,6 +16,8 @@ pygame.display.set_caption("Particle Physics simulator")
 clock = pygame.time.Clock()
 
 #function that crops the transparent part of the image
+#by finding pixels with an alpha level of 0 and removing them which is done by the .get_bounding_rect() function
+#it then creates a copy of that new rect using the .copy() function which is what the simulator uses
 def crop_transparency(image: pygame.Surface) -> pygame.Surface:
     rect = image.get_bounding_rect()  # Finds non-transparent area
     return image.subsurface(rect).copy()
@@ -46,6 +48,13 @@ Y_POS_EXIT_BUTTON = 0
 X_POS_NOTE_BUTTON = screen_width - 100
 Y_POS_NOTE_BUTTON = 0
 
+#position for menus.
+X_POS_HELP_MENU = 100
+Y_POS_HELP_MENU = 100
+
+X_POS_NOTE_MENU = 100
+Y_POS_NOTE_MENU = 100
+
 #initialising the buttons.
 help_button = Help_Button(X_POS_HELP_BUTTON, Y_POS_HELP_BUTTON, help_button_img)
 exit_button = Exit_Button(X_POS_EXIT_BUTTON, Y_POS_EXIT_BUTTON, exit_button_img)
@@ -59,13 +68,16 @@ while True:
     #gets the mouse position for future use.
     x_pos, y_pos = pygame.mouse.get_pos()
 
+    x_pos -= 5
+    y_pos -= 5
+
     #this is here so the screen refreshes so the particles move on the screen.
     screen.fill((0,0,0))
 
     #how the buttons get put onto the screen.
     user_note_button.draw(screen)
     if user_note_button.menu_visible:
-        screen.blit(under_construction, (100, 100))
+        screen.blit(under_construction, (X_POS_NOTE_MENU, Y_POS_NOTE_MENU))
     else:
         pass
 
@@ -76,7 +88,7 @@ while True:
 
     help_button.draw(screen)
     if help_button.menu_visible:
-        screen.blit(help_menu, (100, 100))
+        screen.blit(help_menu, (X_POS_HELP_MENU, Y_POS_HELP_MENU))
     else:
         pass
 
