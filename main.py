@@ -63,8 +63,11 @@ user_note_button = Notes_Button(X_POS_NOTE_BUTTON, Y_POS_NOTE_BUTTON, user_note_
 #list of all the particles on the screen and there position so they don't disappear.
 particle_list = []
 
+#flag to tell if the programme is running
+running = True
+
 #the loop that opens the window and allows you to place particles.
-while True:
+while running:
     #gets the mouse position for future use.
     x_pos, y_pos = pygame.mouse.get_pos()
 
@@ -74,23 +77,29 @@ while True:
     #this is here so the screen refreshes so the particles move on the screen.
     screen.fill((0,0,0))
 
+    #draws all the particles onto the screen by adding them to particle_list.
+    for particle, image in particle_list:
+        screen.blit(image, (particle.x, particle.y))
+
     #how the buttons get put onto the screen.
-    user_note_button.draw(screen)
     if user_note_button.menu_visible:
         screen.blit(under_construction, (X_POS_NOTE_MENU, Y_POS_NOTE_MENU))
     else:
         pass
 
     if exit_button.draw(screen):
-        exit()
+        running = False
     else:
         pass
 
-    help_button.draw(screen)
     if help_button.menu_visible:
         screen.blit(help_menu, (X_POS_HELP_MENU, Y_POS_HELP_MENU))
     else:
         pass
+
+    exit_button.draw(screen)
+    user_note_button.draw(screen)
+    help_button.draw(screen)
 
     #creates a dictionary for each particle by looping through the particle list
     physics_data = [{'x': particle.x, 'y': particle.y, 'charge': particle.charge, 'mass': particle.mass}
@@ -145,10 +154,6 @@ while True:
         #updates the position of the particles.
         particle.x += particle.vx
         particle.y += particle.vy
-
-    #draws all the particles onto the screen by adding them to particle_list.
-    for particle, image in particle_list:
-        screen.blit(image, (particle.x, particle.y))
 
     #the loop that handles the events of the game.
     for event in pygame.event.get():
