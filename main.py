@@ -1,5 +1,5 @@
 import pygame
-from pygame import Surface, KMOD_CTRL, K_DELETE
+from pygame import Surface, KMOD_CTRL, K_DELETE, K_BACKSPACE
 from particles import *
 from buttons import *
 from forces import *
@@ -167,29 +167,27 @@ while running:
             button_x = screen_width - 100
             button_y = 0
             user_note_button = Notes_Button(button_x, button_y, user_note_img)
-        #selection that allows you to place particles down.
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p:
-                p = Baryon.proton(x_pos, y_pos)
-                particle_list.append((p, proton_img))
-            if event.key == pygame.K_e:
-                e = Lepton.electron(x_pos, y_pos)
-                particle_list.append((e, electron_img))
-            if event.key == pygame.K_n:
-                n = Baryon.neutron(x_pos, y_pos)
-                particle_list.append((n, neutron_img))
-            if event.key == pygame.K_v:
-                v = Lepton.neutrino(x_pos, y_pos)
-                particle_list.append((v, neutrino_img))
-            if event.key == pygame.K_BACKSPACE:
-                if len(particle_list) >= 1:
-                    particle_list.pop()
-            if event.key == K_DELETE:
-                #returns the current modifier key
-                mods = pygame.key.get_mods()
-                #cheaks if control is being held
-                if mods & pygame.KMOD_CTRL:
-                    particle_list.clear()
+
+        #dictionary for inputs as this is quicker than lots of if statements
+        key_actions = {
+            pygame.K_p: (Baryon.proton, proton_img),
+            pygame.K_e: (Lepton.electron, electron_img),
+            pygame.K_n: (Baryon.neutron, neutron_img),
+            pygame.K_v: (Lepton.neutrino, neutrino_img),
+        }
+
+        if event.type == pygame.KEYDOWN:
+            mods = pygame.key.get_mods()
+            # removes the most recent particle if the user pressed the length of the is >= 1
+            if event.key == K_BACKSPACE and len(particle_list) >= 1:
+                particle_list.pop()
+            if mods & pygame.KMOD_CTRL and event.key == pygame.K_DELETE:
+                particle_list.clear()  #ctrl+Delete clears everything
+            elif event.key in key_actions:  #checks if the key exists in the dictionary
+                constructor, image = key_actions[event.key]  #gets the associated function and image
+                particle = constructor(x_pos, y_pos)  #calls the constructor
+                particle_list.append((particle, image))  #adds particle to the list
+
     #Updates the display at 60 frames per second.
     pygame.display.update()
     clock.tick(60)
