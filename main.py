@@ -1,6 +1,5 @@
 import pygame
-from sys import exit
-from pygame import Surface
+from pygame import Surface, KMOD_CTRL, K_DELETE
 from particles import *
 from buttons import *
 from forces import *
@@ -182,7 +181,15 @@ while running:
             if event.key == pygame.K_v:
                 v = Lepton.neutrino(x_pos, y_pos)
                 particle_list.append((v, neutrino_img))
-
+            if event.key == pygame.K_BACKSPACE:
+                if len(particle_list) >= 1:
+                    particle_list.pop()
+            if event.key == K_DELETE:
+                #returns the current modifier key
+                mods = pygame.key.get_mods()
+                #cheaks if control is being held
+                if mods & pygame.KMOD_CTRL:
+                    particle_list.clear()
     #Updates the display at 60 frames per second.
     pygame.display.update()
     clock.tick(60)
