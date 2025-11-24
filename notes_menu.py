@@ -51,13 +51,6 @@ class Notes_Menu:
         elif event.key == pygame.K_BACKSPACE:
             self.text = self.text[:-1]
 
-        else:
-            # Fallback: some platforms don't emit TEXTINPUT consistently.
-            # If KEYDOWN has a printable unicode, append it.
-            ch = getattr(event, "unicode", "")
-            if ch and ch.isprintable():
-                self.text += ch
-
     def handle_text(self, text: str):
         """
         Handle printable characters from TEXTINPUT (preferred).
