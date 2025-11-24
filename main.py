@@ -2,6 +2,7 @@ import pygame
 from pygame import Surface, KMOD_CTRL, K_DELETE, K_BACKSPACE
 from particles import *
 from buttons import *
+from notes_menu import Notes_Menu
 from forces import *
 import math as maths
 
@@ -107,6 +108,10 @@ help_button = Help_Button(X_POS_HELP_BUTTON, Y_POS_HELP_BUTTON, help_button_img)
 exit_button = Exit_Button(X_POS_EXIT_BUTTON, Y_POS_EXIT_BUTTON, exit_button_img)
 user_note_button = Notes_Button(X_POS_NOTE_BUTTON, Y_POS_NOTE_BUTTON, user_note_img)
 
+# once, after creating notes_menu:
+notes_menu = Notes_Menu(X_POS_NOTE_MENU, Y_POS_NOTE_MENU, width=int(screen_width * 0.5),
+                        height=int(screen_height * 0.45))
+
 # -----------------------------------------------------------------------------
 # Simulation state containers
 # -----------------------------------------------------------------------------
@@ -167,19 +172,15 @@ while running:
     # Exit button: .draw() can return True when clicked to request termination.
     if exit_button.draw(screen):
         running = False
-    else:
-        pass
 
     # Help overlay when visible.
     if help_button.menu_visible:
         screen.blit(help_menu, (X_POS_HELP_MENU, Y_POS_HELP_MENU))
-    else:
-        pass
 
+    # each frame:
     if user_note_button.menu_visible:
-        screen.blit(under_construction, (X_POS_HELP_MENU, Y_POS_HELP_MENU))
-    else:
-        pass
+        notes_menu.update(clock.get_time())
+        notes_menu.draw(screen)
 
     # Draw static buttons each frame (hover/click visuals may be internal).
     exit_button.draw(screen)
@@ -276,6 +277,16 @@ while running:
             pygame.quit()
             exit()
 
+        # Route keyboard to the NotesMenu when it is open
+        if user_note_button.menu_visible:
+            if event.type == pygame.TEXTINPUT:
+                notes_menu.handle_text(event.text)
+                continue  # don't let this event fall through
+
+            if event.type == pygame.KEYDOWN:
+                notes_menu.handle_key(event)
+                continue  # don't let particle handlers use this key
+
         # Resize handling
         #   - Recreate the display surface with the new size.
         #   - Re-anchor the notes button at the top-right (screen_width - 100, 0).
@@ -355,6 +366,6 @@ while running:
     # -----------------------------------------------------------------------------
     #   - pygame.display.update(): swaps the backbuffer to the screen.
     #   - clock.tick(60): caps the frame rate at ~60 FPS for consistent timing.
-    # -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------z
     pygame.display.update()
     clock.tick(60)
