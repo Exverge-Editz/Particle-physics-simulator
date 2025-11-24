@@ -1,5 +1,12 @@
-
 import pygame
+import logging
+
+# Configure logging: write to a file called app.log
+logging.basicConfig(
+    filename="app.log",
+    level=logging.ERROR,  # Only log errors and above
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 class Notes_Menu:
     """
@@ -37,16 +44,23 @@ class Notes_Menu:
         Handle control keys (Enter, Backspace) and printable fallback.
         """
         if event.key == pygame.K_RETURN:
-            t = self.text.strip()
-            if t:
-                self.notes.append(t)
+            current_note = self.text.strip()
+            if current_note:
+                self.notes.append(current_note)
                 self.text = ""
                 # Optional persistence
                 try:
                     with open("notes.txt", "a", encoding="utf-8") as f:
-                        f.write(t + "\n")
-                except Exception:
-                    pass
+                        f.write(current_note + "\n")
+                # -----------------------------------------------------------------------------
+                # Catches:
+                #   -FileNotFoundErrors: if you pass a path to a file in a directory that doesn’t exist
+                #   -PermissionError: if you don’t have permission to create or write to the file/location.
+                #   -IsADirectoryError: if "notes.txt" is actually a directory name.
+                #   -OSError (general I/O): for other OS-level problems (invalid path characters, device errors, etc.).
+                # -----------------------------------------------------------------------------
+                except OSError as error:
+                    logging.error(f"Failed to write note to file: {error}")
 
         elif event.key == pygame.K_BACKSPACE:
             self.text = self.text[:-1]
